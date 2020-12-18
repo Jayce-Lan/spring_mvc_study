@@ -7,23 +7,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="37941123-b23b-4eb3-b824-b9901630b3f4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/learn/controller/AnnoController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/learn/controller/HelloController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/learn/controller/ParamController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/learn/pojo/AccoountMap.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/learn/pojo/Account.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/learn/pojo/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/learn/utils/StringToDateConverter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/springmvc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/pages/success.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/anno.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/param.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,6 +175,7 @@
       <workItem from="1608165085140" duration="2361000" />
       <workItem from="1608170401051" duration="7541000" />
       <workItem from="1608180448266" duration="13141000" />
+      <workItem from="1608254333823" duration="89000" />
     </task>
     <servers />
   </component>
@@ -278,10 +263,14 @@
       <screen x="0" y="0" width="1280" height="679" />
     </state>
     <state x="142" y="0" key="SettingsEditor/0.0.1280.679@0.0.1280.679" timestamp="1608189347270" />
-    <state x="325" y="163" key="com.intellij.ide.util.TipDialog" timestamp="1608180448298">
+    <state x="325" y="163" key="com.intellij.ide.util.TipDialog" timestamp="1608254333565">
       <screen x="0" y="0" width="1280" height="679" />
     </state>
-    <state x="325" y="163" key="com.intellij.ide.util.TipDialog/0.0.1280.679@0.0.1280.679" timestamp="1608180448298" />
+    <state x="325" y="163" key="com.intellij.ide.util.TipDialog/0.0.1280.679@0.0.1280.679" timestamp="1608254333565" />
+    <state x="28" y="14" key="new project wizard" timestamp="1608254420886">
+      <screen x="0" y="0" width="1280" height="679" />
+    </state>
+    <state x="28" y="14" key="new project wizard/0.0.1280.679@0.0.1280.679" timestamp="1608254420886" />
     <state x="303" y="0" width="672" height="678" key="search.everywhere.popup" timestamp="1608177553592">
       <screen x="0" y="0" width="1280" height="679" />
     </state>
