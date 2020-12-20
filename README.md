@@ -6,9 +6,9 @@
 
 > 添加如下键值对
 
-**name:**archetypeCatalog
+**name:**  archetypeCatalog
 
-**value:**internal
+**value:**  internal
 
 
 
@@ -952,6 +952,32 @@ public String testRedirect() {
 
 #### 响应json数据
 
+##### 异步请求maven依赖
+
+```xml
+<!--json依赖-->
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-core</artifactId>
+    <version>2.12.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.12.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-annotations</artifactId>
+    <version>2.12.0</version>
+</dependency>
+```
+
+
+
 ##### 配置静态资源解除拦截
 
 `DispatcherServlet`会拦截任何资源，因此`spring.xml`文件中需要配置解除对静态资源的拦截
@@ -1047,4 +1073,148 @@ public @ResponseBody User testAjax(@RequestBody User user) {
 
 
 
-### SpringMVC传统方式上传文件
+## SpringMVC实现上传文件
+
+### 文件上传
+
+#### 导入对应依赖
+
+```xml
+<!--文件上传依赖-->
+<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+<dependency>
+    <groupId>commons-io</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>2.4</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+<dependency>
+    <groupId>commons-fileupload</groupId>
+    <artifactId>commons-fileupload</artifactId>
+    <version>1.3.3</version>
+</dependency>
+```
+
+以上依赖是上传文件的必要依赖，会帮助我们解析文件
+
+
+
+### 传统的文件上传方式
+
+> 方法
+
+```java
+/**
+ * 使用传统方式的文件上传
+ * @param request 通过HttpServletRequest请求获取到文件
+ * @return 返回成功页面
+ * @throws Exception
+ */
+@RequestMapping("traditionFileUpload")
+public String traditionFileUpload(HttpServletRequest request) throws Exception {
+    System.out.println("文件正在上传...");
+
+    //使用fileupload组件完成文件上传
+    //上传的位置
+    String path = request.getSession().getServletContext().getRealPath("/uploads/");
+    File file = new File(path);     //上传文件夹的路径，该路径存在于tomcat的项目目录下
+
+    if (!file.exists())
+        file.mkdirs();  //如果该路径不存在，则新建一个文件夹
+
+    //解析request对象获取上传文件项
+    DiskFileItemFactory factory = new DiskFileItemFactory();
+    ServletFileUpload upload = new ServletFileUpload(factory);
+
+    //解析request
+    List<FileItem> items = upload.parseRequest(request);    //返回一个装有文件项目的集合
+    //遍历
+    for (FileItem item : items) {
+        //判断item是否是上传文件项
+        if (item.isFormField()) {
+            //普通表单项
+        } else {
+            //上传文件项
+            String fileName = item.getName();   //获取文件名称
+            //设置唯一文件名
+            String uuid = UUID.randomUUID().toString().replace("-", "");
+            fileName = uuid + "_" + fileName;
+
+            item.write(new File(path, fileName));   //完成文件上传
+            item.delete();      //删除临时文件
+        }
+    }
+
+    return "success";
+}
+```
+
+> 对应的jsp
+
+```jsp
+<%--上传文件必须指定enctype属性--%>
+<form action="file/traditionFileUpload" method="post" enctype="multipart/form-data">
+    选择文件：<input type="file" name="upload"/>
+    <input type="submit" value="上传"/>
+</form>
+```
+
+
+
+### SpringMVC实现文件上传
+
+#### 执行流程
+
+- 文件上传
+- 通过 `request` 传给前端控制器 --> 前端控制器调用文件解析器解析文件
+- 以 `upload` 的形式返回给服务器方法
+
+
+
+#### 配置文件解析器
+
+在spring中上传文件我们需要依赖于`CommonsMultipartResolver`
+
+> spring.xml
+
+```xml
+<!--配置文件解析器-->
+<!--这里要求id必须为multipartResolver-->
+<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    <property name="maxUploadSize" value="10485760"/>
+</bean>
+```
+
+> 实现
+
+```java
+/**
+ * 使用springMVC的方式上传文件
+ * @param request 通过HttpServletRequest请求获取到文件
+ * @param springMVCUpload 获取上传的文件，该处的参数名必须与表单中，上传文件选项的name一致
+ *                        对应jsp：<input type="file" name="springMVCUpload"/>
+ * @return 返回成功结果
+ * @throws IOException
+ */
+@RequestMapping("springMVCFileUpload")
+public String springMVCFileUpload(HttpServletRequest request, MultipartFile springMVCUpload) throws IOException {
+    System.out.println("springMVCFileUpload...");
+
+    String path = request.getSession().getServletContext().getRealPath("/uploads/");
+    File file = new File(path);     //上传文件夹的路径
+
+    if (!file.exists())
+        file.mkdirs();  //如果该路径不存在，则新建一个文件夹
+
+    //获取文件名
+    String fileName = springMVCUpload.getOriginalFilename();
+    String uuid = UUID.randomUUID().toString().replace("-", "");
+    fileName = uuid + "_" + fileName;
+
+    //文件上传
+    springMVCUpload.transferTo(new File(path, fileName));
+
+    return "success";
+}
+```
+
