@@ -3,7 +3,9 @@ package com.learn.controller;
 import com.learn.pojo.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -109,5 +111,22 @@ public class UserController {
     public String testRedirect() {
         System.out.println("testRedirect执行了...");
         return "redirect:/index.jsp";
+    }
+
+    /**
+     * 模拟异步请求
+     * 获取对应的json数据
+     * @param user 将前端传来的数据设置为请求体，获取请求体数据
+     * @return 返回一个对象，返回值由@ResponseBody来响应
+     */
+    @RequestMapping("testAjax")
+    public @ResponseBody User testAjax(@RequestBody User user) {
+        System.out.println("testAjax...");
+        //客户端发送Ajax请求，传入json字符串，后台jar包封装了这个json字符串到user中
+        System.out.println(user);
+        //相应，模拟查询/修改数据库信息
+        user.setAge(40);
+
+        return user;
     }
 }

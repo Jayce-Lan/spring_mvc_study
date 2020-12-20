@@ -948,3 +948,103 @@ public String testRedirect() {
 }
 ```
 
+
+
+#### 响应json数据
+
+##### 配置静态资源解除拦截
+
+`DispatcherServlet`会拦截任何资源，因此`spring.xml`文件中需要配置解除对静态资源的拦截
+
+> spring.xml
+
+```xml
+<!--配置静态资源不拦截-->
+<mvc:resources mapping="/js/**" location="/js/"/>
+<mvc:resources mapping="/css/**" location="/css/"/>
+<mvc:resources mapping="/img/**" location="/img/"/>
+```
+
+
+
+##### 获取到前端传来的json参数
+
+```java
+/**
+* 模拟异步请求
+* 获取对应的json数据
+* @param data 将前端传来的数据设置为请求体，获取请求体数据
+*/
+@RequestMapping("testAjax")
+public void testAjax(@RequestBody String data) {
+    System.out.println("testAjax...");
+    System.out.println(data);
+}
+```
+
+> 与之对应的jsp
+
+```jsp
+<script>
+$.ajax({
+    //编写json格式，设置属性与值
+    url: "user/testAjax",   //指定请求路径
+    contentType: "application/json;charset=UTF-8",    //指定编码集
+    data: '{"username": "李华", "password": "1234", "age": 20}',   //前端传给服务器的数据
+    dataType: "json",   //设定数据类型
+    type: "post",   //设置请求类型
+    success: function (data) {  //设置成功后的回调函数，里面的参数代表服务器端响应的数据
+    	//解析服务端的数据
+    }
+});
+</script>
+```
+
+
+
+##### @ResponseBody 响应对象
+
+```jsp
+<script>
+$.ajax({
+    //编写json格式，设置属性与值
+    url: "user/testAjax",   //指定请求路径
+    contentType: "application/json;charset=UTF-8",    //指定编码集
+    data: '{"username": "李华", "password": "1234", "age": 20}',   //前端传给服务器的数据
+    dataType: "json",   //设定数据类型
+    type: "post",   //设置请求类型
+    success: function (data) {  //设置成功后的回调函数，里面的参数代表服务器端响应的数据
+    	//解析服务端的数据
+        console.log(data);
+        console.log(data.username);
+        console.log(data.password);
+        console.log(data.age);
+    }
+});
+</script>
+```
+
+> 后台
+
+```java
+/**
+* 模拟异步请求
+* 获取对应的json数据
+* @param user 将前端传来的数据设置为请求体，获取请求体数据
+* @return 返回一个对象，返回值由@ResponseBody来响应
+*/
+@RequestMapping("testAjax")
+public @ResponseBody User testAjax(@RequestBody User user) {
+    System.out.println("testAjax...");
+    //客户端发送Ajax请求，传入json字符串，后台jar包封装了这个json字符串到user中
+    System.out.println(user);
+    //相应，模拟查询/修改数据库信息
+    user.setAge(40);
+
+    return user;
+}
+```
+
+
+
+### SpringMVC传统方式上传文件
