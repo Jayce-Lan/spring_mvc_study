@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 开启注解扫描 -->
+    <context:component-scan base-package="com.learn"/>
+
+    <!-- 配置视图解析器 -->
+    <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!--文件所在目录-->
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <!--文件后缀名-->
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!--配置静态资源不拦截-->
+    <mvc:resources mapping="/js/**" location="/js/"/>
+    <mvc:resources mapping="/css/**" location="/css/"/>
+    <mvc:resources mapping="/img/**" location="/img/"/>
+
+    <!--配置拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--需要拦截的具体方法,如果都需要拦截写为 /** ，这里只拦截user域名下面的方法-->
+            <mvc:mapping path="/user/*"/>
+            <!--注入拦截器-->
+            <bean class="com.learn.interceptor.MyInterceptor"/>
+        </mvc:interceptor>
+        <!--配置多个拦截器-->
+        <mvc:interceptor>
+            <!--需要拦截的具体方法,如果都需要拦截写为 /** ，这里只拦截user域名下面的方法-->
+            <mvc:mapping path="/user/*"/>
+            <!--注入拦截器-->
+            <bean class="com.learn.interceptor.TwoInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <!-- 开启springMVC注解的支持 -->
+    <mvc:annotation-driven/>
+
+</beans>

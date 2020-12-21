@@ -1319,3 +1319,136 @@ public String crossServerFileUpload(MultipartFile upload) throws IOException {
 
 ## SpringMVC拦截器
 
+用于对处理器（controller）进行预处理和后处理
+
+### 与过滤器的异同
+
+> 过滤器
+
+- 是 `servlet` 规范中的一种，任何 Java web 工程都可以使用
+- 在 `url-pattern` 中配置了 `/*` 之后，可以对所有要访问的资源进行拦截
+
+> 拦截器
+
+- 拦截器是 SpringMVC 本身的内容，只有在使用了 SpringMVC 框架的工程可以使用
+- 只会拦截访问控制器的方法，如果访问的是 jsp 、html 、 css、 img 或者 js 时，不会进行拦截
+
+ 
+
+### 拦截器使用流程
+
+- 编写拦截器类，必须实现 `HandlerInterceptor` 接口
+- 配置拦截器类
+
+
+
+### 项目主要依赖目录
+
+- src/main
+  - java/com/learn
+    - controller【web执行】
+    - interceptor【拦截器】
+  - resources
+    - springmvc.xml
+
+
+
+### 配置拦截器
+
+拦截器类实现了`HandlerInterceptor` 接口并重写方法后，必须要在 `spring.xml` 中配置
+
+```xml
+<!--配置拦截器-->
+<mvc:interceptors>
+    <mvc:interceptor>
+        <!--需要拦截的具体方法,如果都需要拦截写为 /** ，这里只拦截user域名下面的方法-->
+        <mvc:mapping path="/user/*"/>
+        <!--不需要拦截的方法，与上面的标签两者只需要存在一个即可-->
+        <mvc:exclude-mapping path=""/>
+        <!--注入拦截器-->
+        <bean class="com.learn.interceptor.MyInterceptor"/>
+    </mvc:interceptor>
+</mvc:interceptors>
+```
+
+
+
+### 拦截器中的方法
+
+#### 预处理方法 `preHandle` 
+
+该方法会在 controller 之前执行，该方法可以作用于逻辑判断
+
+```java
+/**
+ * 重写预处理方法，controller 方法执行前
+ * @param request
+ * @param response
+ * @param handler
+ * @return 返回true表示放行，false表示不放行，即为controller中被拦截的方法不会执行
+ * @throws Exception
+ */
+@Override
+public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    System.out.println("拦截器预处理执行了...");
+    
+    //该方法中也可以进行请求转发
+  	request.getRequestDispatcher("/WEB-INF/pages/error.jsp")
+        .forward(request, response);
+    
+    return true;
+}
+```
+
+
+
+#### 后处理方法 `postHandle`
+
+该方法作用于 controller 执行后， success 执行前
+
+```java
+/**
+* 后处理方法 controller 执行后， success 执行前
+* @param request
+* @param response
+* @param handler
+* @param modelAndView
+* @throws Exception
+*/
+@Override
+public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    System.out.println("拦截器后处理方法执行了...");
+
+    //该方法内部也可以进行请求转发
+    request.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(request, response);
+}
+```
+
+
+
+#### 最后方法 `afterCompletion`
+
+该方法在 controller 方法完成并跳转后执行（即为 success 之后执行），该方法可以用于释放资源
+
+```java
+/**
+ * 该方法在controller方法完成并跳转后执行（即为success之后执行）
+ * @param request
+ * @param response
+ * @param handler
+ * @param ex
+ * @throws Exception
+ */
+@Override
+public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    System.out.println("拦截器最后方法执行了...");
+}
+```
+
+
+
+#### 拦截器遵循以下顺序
+
+浏览器 --> 请求前端控制器 --> controller --> service --> dao 
+
+出现异常或被拦截后会反向传回
