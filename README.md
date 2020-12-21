@@ -1218,3 +1218,61 @@ public String springMVCFileUpload(HttpServletRequest request, MultipartFile spri
 }
 ```
 
+由于springMVC会做文件处理，因此无需手动删除文件
+
+
+
+### 跨服务器上传文件
+
+#### 导入跨服务器上传文件依赖
+
+```xml
+<!--跨服务器上传依赖-->
+<!-- https://mvnrepository.com/artifact/com.sun.jersey/jersey-core -->
+<dependency>
+    <groupId>com.sun.jersey</groupId>
+    <artifactId>jersey-core</artifactId>
+    <version>1.19.4</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.sun.jersey/jersey-client -->
+<dependency>
+    <groupId>com.sun.jersey</groupId>
+    <artifactId>jersey-client</artifactId>
+    <version>1.19.4</version>
+</dependency>
+```
+
+#### 代码实现
+
+> 实现代码
+
+```java
+/**
+ * 实现跨服务器上传文件
+ * @param upload 这里要与前端表单中上传文件中的name属性一致
+ *               对应的jsp：<input type="file" name="upload"/>
+ * @return 返回成功页面
+ * @throws IOException
+ */
+@RequestMapping("crossServerFileUpload")
+public String crossServerFileUpload(MultipartFile upload) throws IOException {
+    System.out.println("跨服务器上传文件...");
+
+    //定义服务器地址，值得注意的是，这里必须要保证该目录下有响应的文件夹
+    String path = "http://localhost:8083/day02_02_fileupload/uploads";
+
+    String fileName = upload.getOriginalFilename();
+    String uuid = UUID.randomUUID().toString().replace("-", "");
+    fileName = uuid + "_" + fileName;
+
+    //创建客户端对象
+    Client client = new Client();
+    //与文件服务器连接，拿到web资源
+    WebResource resource = client.resource(path + "/" + fileName);
+    //上传文件，拿到字节数组
+    resource.put(upload.getBytes());
+
+    return "success";
+}
+```
+
