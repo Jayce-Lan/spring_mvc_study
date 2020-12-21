@@ -1276,3 +1276,46 @@ public String crossServerFileUpload(MultipartFile upload) throws IOException {
 }
 ```
 
+
+
+## SpringMVC异常处理
+
+一般情况下，持久层异常会抛给service，随后service会抛给web（即接口方法类），web会将异常抛给前端控制器，最后由前端控制器处理异常（配置 异常处理器）
+
+异常处理器会处理异常并跳转到友好提示页面，最后渲染到浏览器中
+
+> 处理异常的步骤
+
+- 编写一个自定义异常的类（用于提示信息）
+- 编写异常处理器
+- 配置异常处理器（跳转友好提示页面）
+
+
+
+### 项目主要依赖目录
+
+- src/main
+  - java/com/learn
+    - controller【存储web接口方法类】
+    - exception【存储异常类】
+      - `SysException`【自定义异常的类，继承了异常类`Exception`】
+      - `SysExceptionResolver`【异常处理器，实现`HandlerExceptionResolver`接口】
+  - webapp
+    - WEB-INF/pages
+      - `error.jsp`【异常跳转页面】
+
+### bean配置
+
+```xml
+<!--异常处理器-->
+<bean id="sysExceptionResolver" class="com.learn.exception.SysExceptionResolver"/>
+```
+
+
+
+项目参考`day02-03-exception`
+
+
+
+## SpringMVC拦截器
+
