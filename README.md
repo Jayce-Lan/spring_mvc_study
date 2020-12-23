@@ -4,11 +4,33 @@
 
 ## 解决maven项目下载过慢
 
-> 添加如下键值对
+
+
+### 创建项目时加入如下键值对
 
 **name:**  archetypeCatalog
 
 **value:**  internal
+
+
+
+### 解决maven导入jar包过慢
+
+在maven的 `setting.xml` 中做如下配置
+
+```xml
+<mirrors>
+    ...
+	<mirror>
+        <id>alimaven</id>
+        <name>aliyun maven</name>
+        <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+		<mirrorOf>central</mirrorOf>
+    </mirror>
+</mirrors>
+```
+
+
 
 
 
